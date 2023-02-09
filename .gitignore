@@ -1,0 +1,4 @@
+private
+cookies
+*.log
+geckodriver.log
