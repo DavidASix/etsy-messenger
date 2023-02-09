@@ -38,9 +38,15 @@ def get_order_ids(d):
         print(element.tag_name)
 
 def add_cookies(d):
-    cs = open('cookies', 'r').read().split()
+    cs = open('cookies', 'r')
+    lines = 0
     for cookie in cs:
-        display(cookie.split(':'))
+        c = cookie.strip()
+        c= c.split('=')
+        d.add_cookie({'name': c[0], 'value': c[1]})
+        lines += 1
+    print('Added', lines/2, 'cookies')
+    return d
 
 def main():
     # Initialize the web browser
@@ -48,13 +54,12 @@ def main():
     # Initially load a page to to avoid cookie aversion error
     driver.get('https://www.etsy.com')
     # Load Auth cookies
-    for attr, value in cookies.items():
-        driver.add_cookie({'name': attr, 'value': value})
-    # pull up 
-
+    driver = add_cookies(driver)
+    # Navigate to orders page
     driver.get("https://www.etsy.com/your/orders/sold/completed")
     # Close the web browser
     #driver.quit()
 
-add_cookies()
+main()
+
 
