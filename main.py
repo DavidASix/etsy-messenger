@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import base64
 import requests
@@ -9,25 +10,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import pyotp
+from colorama import init
+init(strip=not sys.stdout.isatty())
+from termcolor import cprint 
 from pyfiglet import figlet_format
 
 import handle_credentials
 
 def get_user_credentials():
-    # Load the username and password from the private.json file
     print('Attempting to load credentials')
     try:
         username, password, tfa_token = handle_credentials.load_credentials()
     except Exception as e:
-        try:
-            print('Credentials not found, please enter your Etsy credentials')
-            username, password, tfa_token = handle_credentials.request_credentials()
-            handle_credentials.store_credentials(username, password, tfa_token)
-        except Exception as e:
-            print('Error: ', e)
-            exit()
-    finally:
-        return username, password, tfa_token
+        print('Error: ', e)
+        exit()
+    return username, password, tfa_token
 
 def get_two_factor(two_factor_base32):
     def is_base32(s):
@@ -159,8 +156,15 @@ def send_messages(order_ids, driver):
         # Wait for the message textarea to be visible and focusable
         textarea = find_element(driver, 10, By.NAME, "message")
         # Get message text
-        with open('my-message.txt', 'r') as file:
-            message = file.read()
+        
+        if os.path.isfile('message-custom.txt'):
+            print('Using custom message')
+            with open('message-custom.txt', 'r') as file:
+                message = file.read()
+        else:
+            print('Using default message')
+            with open('message-default.txt', 'r') as file:
+                message = file.read()
         # Send some text to the message textarea
         textarea.send_keys(f'\n{message}')
         # This text area is not a basic html form, and relies on javascript to dispatch an event
@@ -176,8 +180,8 @@ def send_messages(order_ids, driver):
         time.sleep(10)
 
 def main():
-    print(figlet_format('ETSY', font='roman'))
-    print(figlet_format('Message Bot', font='speed'))
+    cprint(figlet_format('ETSY', font='roman'), 'white', 'on_red', attrs=['bold'])
+    cprint(figlet_format('Thanks Bot', font='speed'), 'white', 'on_red', attrs=['bold'])
     print('By David A Six')
     print('https://www.github.com/davidsix\n\n')
     username, password, two_factor = get_user_credentials()
