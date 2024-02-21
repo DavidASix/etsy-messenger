@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import base64
 import requests
 import time
 from selenium import webdriver
@@ -9,43 +8,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-import pyotp
 from colorama import init
 init(strip=not sys.stdout.isatty())
 from termcolor import cprint 
 from pyfiglet import figlet_format
 
 import handle_credentials
-
-def get_user_credentials():
-    print('Attempting to load credentials')
-    try:
-        username, password, tfa_token = handle_credentials.load_credentials()
-    except Exception as e:
-        print('Error: ', e)
-        exit()
-    return username, password, tfa_token
-
-def get_two_factor(two_factor_base32):
-    def is_base32(s):
-        try:
-            base64.b32decode(s)
-            return True
-        except:
-            return False
-
-    if (len(two_factor_base32) % 8):
-        tfa_missing_len = 8 - (len(two_factor_base32) % 8)
-        two_factor_base32 = two_factor_base32 + ('=' * tfa_missing_len)
-
-    if not is_base32(two_factor_base32):
-        print("Invalid base32")
-        return False
-    
-    print('Base32 2FA code parsed')    
-    totp = pyotp.TOTP(two_factor_base32)
-    return totp.now()
-
 
 def login_to_etsy(username, password, two_factor):
     # Create a new Firefox instance
@@ -75,7 +43,7 @@ def login_to_etsy(username, password, two_factor):
         )
 
         if two_fa_input:
-            code = get_two_factor(two_factor)
+            code = handle_credentials.get_two_factor(two_factor)
             two_fa_input.clear()
             two_fa_input.send_keys(code)
             submit_two_fa = driver.find_element(By.NAME, 'submit_attempt')
@@ -143,10 +111,8 @@ def find_element(driver, time, by, value):
         print('Error: ', e)
         exit()
 
-
-
 def send_messages(order_ids, driver):
-    #print(order_ids)
+    exit()
     i = 1
     for order_id in order_ids:
         driver.get(f"https://www.etsy.com/your/orders/sold/completed?order_id={order_id}")
@@ -184,7 +150,7 @@ def main():
     cprint(figlet_format('Thanks Bot', font='speed'), 'white', 'on_red', attrs=['bold'])
     print('By David A Six')
     print('https://www.github.com/davidsix\n\n')
-    username, password, two_factor = get_user_credentials()
+    username, password, two_factor = handle_credentials.request_credentials()
     # Call the login function
     print('Attempting to log in to Etsy...')
     driver = login_to_etsy(username, password, two_factor)
