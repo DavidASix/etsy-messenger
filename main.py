@@ -13,7 +13,7 @@ init(strip=not sys.stdout.isatty())
 from termcolor import cprint 
 from pyfiglet import figlet_format
 
-import handle_credentials
+import credential_handler
 import settings_handler
 
 def login_to_etsy(username, password, two_factor):
@@ -60,7 +60,7 @@ def login_to_etsy(username, password, two_factor):
         )
 
         if two_fa_input:
-            code = handle_credentials.get_two_factor(two_factor)
+            code = credential_handler.get_two_factor(two_factor)
             two_fa_input.clear()
             two_fa_input.send_keys(code)
             submit_two_fa = driver.find_element(By.NAME, 'submit_attempt')
@@ -166,7 +166,7 @@ def main():
     cprint(figlet_format('Thanks Bot', font='speed'), 'white', 'on_red', attrs=['bold'])
     print('By David A Six')
     print('https://www.github.com/davidsix\n\n')
-    username, password, two_factor = handle_credentials.request_credentials()
+    username, password, two_factor = credential_handler.request_credentials()
     # Call the login function
     print('Attempting to log in to Etsy...')
     driver = login_to_etsy(username, password, two_factor)
