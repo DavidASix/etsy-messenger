@@ -14,14 +14,31 @@ from termcolor import cprint
 from pyfiglet import figlet_format
 
 import handle_credentials
+import settings_handler
 
 def login_to_etsy(username, password, two_factor):
-    # Create a new Firefox instance
-    firefox_options = webdriver.FirefoxOptions()
-    #firefox_options.add_argument('--headless')
-    firefox_options.add_argument('--disable-gpu')
-    firefox_options.add_argument('--window-size=1280,720')
-    driver = webdriver.Firefox(options=firefox_options)
+    settings = settings_handler.get_settings()
+    if settings['browser'] == 'Chrome':
+        browser_options = webdriver.ChromeOptions()
+    elif (settings['browser'] == 'Firefox'):
+        browser_options = webdriver.FirefoxOptions()
+    else:
+        print('Browser not found in settings')
+        exit()
+    browser_options.add_argument('--disable-gpu')
+    browser_options.add_argument('--window-size=1280,720')
+    if settings['headless']:
+        browser_options.add_argument('--headless')
+    try:
+        if settings['browser'] == 'Chrome':
+            print('Initializing Chrome...')
+            driver = webdriver.Chrome(options=browser_options)
+        elif (settings['browser'] == 'Firefox'):
+            print('Initializing Firefox...')
+            driver = webdriver.Firefox(options=browser_options)
+    except Exception as e:
+        print('Error initializing browser: ', e)
+        exit()
 
     # Navigate to Etsy sign-in page
     driver.get('https://www.etsy.com/signin')
@@ -112,7 +129,6 @@ def find_element(driver, time, by, value):
         exit()
 
 def send_messages(order_ids, driver):
-    exit()
     i = 1
     for order_id in order_ids:
         driver.get(f"https://www.etsy.com/your/orders/sold/completed?order_id={order_id}")
