@@ -169,3 +169,4 @@ archive/
 .privatedata
 my-message.txt
 message-custom.txt
+settings.json
