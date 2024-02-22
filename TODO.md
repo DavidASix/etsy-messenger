@@ -4,4 +4,4 @@
 - [X] Add settings module
 * Headless or non-headless
 * Which browser to use
-- [ ] Clean up main.py to be easily readable
+- [X] Clean up main.py to be easily readable
