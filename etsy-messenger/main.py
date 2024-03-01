@@ -13,6 +13,7 @@ def main():
     cprint(figlet_format('Thanks Bot', font='speed'), 'white', 'on_red', attrs=['bold'])
     print('By David A Six')
     print('https://www.github.com/davidsix\n\n')
+
     # Get and set user credentials
     username, password, two_factor = credential_handler.request_credentials()
     # Call the login function
@@ -22,6 +23,7 @@ def main():
     # Strip the cookies from the driver
     cookies = driver.get_cookies()
     cookies = "; ".join([f"{c['name']}={c['value']}" for c in cookies])
+
     # Utilize the cookies to get the 50 most recent orders
     print('Finding recent orders...')
     order_ids = etsy_handler.collect_order_ids(cookies)
@@ -31,6 +33,7 @@ def main():
     orders_without_messages = etsy_handler.find_orders_without_messages(order_ids, cookies)
     print(f"Found {len(orders_without_messages)} orders without messages")
     # orders_without_messages = orders_without_messages[:1]
+    
     # Send a message to the orders without message history
     etsy_handler.send_messages(orders_without_messages, driver)
     print('Script complete, thanks for using the Etsy Message Bot!')

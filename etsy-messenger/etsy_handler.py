@@ -148,7 +148,6 @@ def send_messages(order_ids, driver):
         # Because of this, after entering text, we need to dispatch an event to let the page know that the text has been entered
         driver.execute_script("arguments[0].dispatchEvent(new Event('input'))", textarea)
         time.sleep(3)
-        exit()
         # Wait for the Send button to be visible and clickable
         send_button = find_element(driver, 10, By.XPATH, "//button[text()='Send']")
         # Click the Send button
