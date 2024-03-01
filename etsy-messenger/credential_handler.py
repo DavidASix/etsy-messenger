@@ -26,7 +26,7 @@ def get_two_factor(two_factor_base32):
 
 def request_credentials():
     try:
-        if os.path.exists('./.privatedata'):
+        if os.path.exists('./etsy-messenger/.privatedata'):
             return load_credentials()
         
         username = questionary.text("Please enter your username").ask()
@@ -67,9 +67,9 @@ def store_credentials(username, password, tfa_code=None):
 def load_credentials():
     # Check if the file exists
     try:
-        if not os.path.exists('./.privatedata'):
+        if not os.path.exists('./etsy-messenger/.privatedata'):
             raise Exception('No credential file found')
-        with open('./.privatedata', 'r') as f:
+        with open('./etsy-messenger/.privatedata', 'r') as f:
             encoded_username, encoded_password, tfa_code = f.read().split(',')
         username = base64.b64decode(encoded_username).decode()[:-1]
         password = base64.b64decode(encoded_password).decode()[:-1]

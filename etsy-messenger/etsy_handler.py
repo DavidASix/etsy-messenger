@@ -133,14 +133,15 @@ def send_messages(order_ids, driver):
         # Wait for the message textarea to be visible and focusable
         textarea = find_element(driver, 10, By.NAME, "message")
         # Get message text
-        
-        if os.path.isfile('message-custom.txt'):
+        custom_order_path = './etsy-messenger/message-custom.txt'
+        default_order_path = './etsy-messenger/message-default.txt'
+        if os.path.isfile(custom_order_path):
             print('Using custom message')
-            with open('message-custom.txt', 'r') as file:
+            with open(custom_order_path, 'r') as file:
                 message = file.read()
         else:
             print('Using default message')
-            with open('message-default.txt', 'r') as file:
+            with open(default_order_path, 'r') as file:
                 message = file.read()
         # Send some text to the message textarea
         textarea.send_keys(f'\n{message}')

@@ -2,7 +2,7 @@ import questionary
 import json
 import os.path
 
-settings_file_name = "settings.json"
+settings_file_name = "./etsy-messenger/settings.json"
 
 def save_settings():
     headless_choice = questionary.select(
