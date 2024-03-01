@@ -2,6 +2,7 @@
 
 - [X] Restructure Etsy methods out of main
 - [X] Add settings module
-* Headless or non-headless
-* Which browser to use
+* [X] Headless or non-headless
+* [X] Which browser to use
 - [X] Clean up main.py to be easily readable
+- [ ] Implement CAPTCHA Solver
